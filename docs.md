@@ -47,3 +47,38 @@ sudo apt-get install software-properties-common
 #Add Docker's official GPG key
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+#Set up the stable repository
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
+
+sudo add-apt repository $(lsb_release -cs)
+
+sudo add-apt repository stable"
+
+#Install docker engine 
+
+apt-get update
+
+apt-get install docker-ce docker-ce-cli containerd.io
+
+#Check the docker version
+
+docker --version
+
+# Install Docker-Compose
+
+#Install docker-compose
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+#Apply executable permission to binary
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+#Check docker-compose version
+
+docker-compose --version
+
+# Install Go Programming Language
+
