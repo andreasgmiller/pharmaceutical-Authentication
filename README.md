@@ -6,6 +6,10 @@ OS, Ubuntu 20.04 (LTS) x64
 # Access
 In windows terminal: ssh root@IP address
 
+or
+
 Configure IP address to putty, using ssh connection
 
-# 
+# Preperation for droplet
+bash
+
