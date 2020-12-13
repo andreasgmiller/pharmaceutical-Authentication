@@ -90,4 +90,14 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 # Install Go Programming Language
+Go version 1.14.x is required.
 
+#Download and Extract Go, latest version 0.4.10.20 1.14.9
+
+sudo wget -c https://dl.google.com/go/go1.14.9.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
+
+#Add the Go binary to the path
+
+vi $HOME/.profile
+
+export PATH="$PATH:/usr/local/go/bin:/root/fabric/fabric-samples/bin"
