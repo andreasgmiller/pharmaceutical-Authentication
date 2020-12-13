@@ -1,5 +1,6 @@
 # Droplet
 Digital Ocean Droplet, 1 CPU, 2 GB, 50 GB SSD
+
 OS, Ubuntu 20.04 (LTS) x64
 
 # Access
