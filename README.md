@@ -11,6 +11,11 @@ or
 Configure IP address to putty, using ssh connection
 
 # Preperation for droplet
+
 ´´´bash
-# Update the OS
+#Update the OS
+apt update
+
+apt upgrade
+´´´ 
 
