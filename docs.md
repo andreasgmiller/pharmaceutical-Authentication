@@ -166,7 +166,7 @@ peer version
 
 #Delete docker images
 
-docker rpi -f image ID
+docker rmi -f image ID
 
 # Test the Installation
 
