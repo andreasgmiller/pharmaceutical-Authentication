@@ -36,6 +36,8 @@ timedatectl set-timezone Continent/City
 
 date 
 
+```
+
 # Install docker
 
 ```
@@ -76,9 +78,11 @@ apt-get install docker-ce docker-ce-cli containerd.io
 #Check the docker version
 
 docker --version
+```
+
 
 # Install Docker-Compose
-
+```
 #Install docker-compose 
 
 sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -92,10 +96,10 @@ sudo chmod +x /usr/local/bin/docker-compose
 #Check docker-compose version
 
 docker-compose --version
-
+```
 # Install Go Programming Language
 Go version 1.14.x is required.
-
+```
 #Download and Extract Go, latest version 0.4.10.20 1.14.9
 
 sudo wget -c https://dl.google.com/go/go1.14.9.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
@@ -125,9 +129,9 @@ go version
 #Check the vars
 
 printenv | grep PATH
-
+```
 # Install Node.js
-
+```
 #Add PPA from Nodesource
 
 curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
@@ -143,9 +147,9 @@ sudo apt-get install -y nodejs
 #Check node version
 
 node -v
-
+```
 # Install Samples, Binaries, and Docker Images
-
+```
 #Create and access new directory
 
 mkdir fabric
@@ -183,12 +187,12 @@ cd fabric-samples/test-network
 #Help
 
 ./network.sh --help
-
+```
 #Bring up the network
-
+```
 ./network.sh up createChannel -c channel1
 
 #Bring network down
 
 ./network.sh down
-
+```
