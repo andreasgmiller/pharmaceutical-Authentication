@@ -132,7 +132,7 @@ source vi $HOME/.profile
 go version
 
 
-#C heck the vars
+# Check the vars
 
 printenv | grep PATH
 ```
