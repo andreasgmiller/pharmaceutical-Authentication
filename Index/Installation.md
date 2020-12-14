@@ -198,9 +198,6 @@ cd fabric-samples/test-network
 ```
 
 # Important factors to bear in mind
-If you have accidentally downloaded a wrong version of the fabric, and you want 
-to delete the docker images for that version, remember to delete the fabric-samples 
-folder before deleting the docker images. Otherwise when reinstalling the correct 
-version of the hyperledger fabric, you will end up with a fabric-samples folder from
-the previous version with docker images from the newly installed version. 
+If you have accidentally downloaded a wrong version of the fabric, and you want to delete the docker images for that version, remember to delete the fabric-samples
+folder before deleting the docker images. Otherwise when reinstalling the correct version of the hyperledger fabric, you will end up with a fabric-samples folder from the previous version with docker images from the newly installed version. 
 
