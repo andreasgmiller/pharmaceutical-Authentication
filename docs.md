@@ -177,9 +177,9 @@ peer version
 docker rmi -f image ID #This deletes docker images one by one.
 
 docker rmi -f $(docker images -a -q) #This deletes all docker images at once.
-
+```
 # Test the Installation
-
+```
 #Switch to base folder
 
 cd fabric-samples/test-network
@@ -187,9 +187,9 @@ cd fabric-samples/test-network
 #Help
 
 ./network.sh --help
-```
+
 #Bring up the network
-```
+
 ./network.sh up createChannel -c channel1
 
 #Bring network down
