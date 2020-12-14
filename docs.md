@@ -167,7 +167,9 @@ peer version
 
 #Delete docker images
 
-docker rmi -f image ID
+docker rmi -f image ID #This deletes docker images one by one.
+
+docker rmi -f $(docker images -a -q) #This deletes all docker images at once.
 
 # Test the Installation
 
