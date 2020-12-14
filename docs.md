@@ -12,7 +12,7 @@ Configure IP address to putty, using ssh connection
 
 # Preperation for droplet
 
-#Update the OS
+```#Update the OS
 
 apt update
 
@@ -33,10 +33,10 @@ timedatectl set-timezone Continent/City
 
 #Check the time
 
-date
+date ```
 
 # Install docker
-#Set up repository
+```#Set up repository
 
 sudo apt-get install apt-transport-https
 
@@ -76,7 +76,7 @@ docker --version
 
 # Install Docker-Compose
 
-#Install docker-compose
+#Install docker-compose 
 
 sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
