@@ -104,27 +104,33 @@ Go version 1.14.x is required.
 
 sudo wget -c https://dl.google.com/go/go1.14.9.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
 
+
 # Add the Go binary to the path
 
 vi $HOME/.profile
 
 export PATH="$PATH:/usr/local/go/bin:/root/fabric/fabric-samples/bin"
 
+
 # Point the GOPATH env var to the fabric workspace folder
 
 export GOPATH=$HOME/fabric
+
 
 # Save and Leave VIM editor
 
 ESC & Shift ZZ
 
+
 # Reload the profile
 
 source vi $HOME/.profile
 
+
 # Check Go version
 
 go version
+
 
 #C heck the vars
 
@@ -136,13 +142,16 @@ printenv | grep PATH
 
 curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
 
+
 # Call the install script
 
 sudo bash nodesource_setup.sh
 
+
 # Install node.js
 
 sudo apt-get install -y nodejs
+
 
 # Check node version
 
@@ -156,21 +165,26 @@ mkdir fabric
 
 cd fabric
 
+
 # Install fabric version 2.2 
 
 curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.1 1.4.9
+
 
 # Install latest fabric version
 
 curl -sSL https://bit.ly/2ysbOFE | bash -s
 
+
 # Check downloaded docker images
 
 docker images
 
+
 # Check the bin cmd
 
 peer version
+
 
 # Delete docker images
 
@@ -180,17 +194,21 @@ docker rmi -f $(docker images -a -q) #This deletes all docker images at once.
 ```
 # Test the Installation
 ```
+
 # Switch to base folder
 
 cd fabric-samples/test-network
+
 
 # Help
 
 ./network.sh --help
 
+
 # Bring up the network
 
 ./network.sh up createChannel -c channel1
+
 
 # Bring network down
 
