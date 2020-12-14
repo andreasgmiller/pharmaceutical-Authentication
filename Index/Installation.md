@@ -12,7 +12,7 @@ Configure IP address to putty, using ssh connection
 
 # Preperation for droplet
 
-``` 
+```bash  
 # Update the OS
 
 apt update
@@ -40,7 +40,7 @@ date
 
 # Install docker
 
-```
+```bash
 # Set up repository
 
 sudo apt-get install apt-transport-https
@@ -82,7 +82,7 @@ docker --version
 
 
 # Install Docker-Compose
-```
+```bash
 # Install docker-compose 
 
 sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -99,7 +99,7 @@ docker-compose --version
 ```
 # Install Go Programming Language
 Go version 1.14.x is required.
-```
+```bash
 # Download and Extract Go, latest version 0.4.10.20 1.14.9
 
 sudo wget -c https://dl.google.com/go/go1.14.9.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
@@ -137,7 +137,7 @@ go version
 printenv | grep PATH
 ```
 # Install Node.js
-```
+```bash
 # Add PPA from Nodesource
 
 curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
@@ -158,7 +158,7 @@ sudo apt-get install -y nodejs
 node -v
 ```
 # Install Samples, Binaries, and Docker Images
-```
+```bash
 # Create and access new directory
 
 mkdir fabric
@@ -198,7 +198,7 @@ docker rmi -f $(docker images -a -q) #This deletes all docker images at once.
 rm -r folder-name
 ```
 # Test the Installation
-```
+```bash
 
 # Switch to base folder
 
