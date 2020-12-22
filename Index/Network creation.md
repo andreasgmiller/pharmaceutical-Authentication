@@ -228,6 +228,43 @@ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride o
 peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name basic --cafile $ORDERER_CA
 ```
 
+# Use the chaincode
+
+```bash
+# First Init the Chaincode
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt  --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt -c '{"function":"Init","Args":["account1","1000","account2","10"]}'
+
+# Query the Chaincode
+peer chaincode query -C $CHANNEL_NAME -n basic -c '{"function":"Query","Args":["account1"]}'
+
+# Invoke the Chaincode from org3
+source org3.env
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt  --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt -c '{"function":"Invoke","Args":["account1","account2","100"]}'
+```
+
+# A Persistent Network
+
+```bash
+# Stop the network
+docker-compose down
+
+# Start the network in the background
+docker-compose up -d
+
+# Show the logs
+docker-compose logs -f -t
+
+# Notice that your system is persistent and you can start the network as long as you do not clean up the docker volumes.
+docker volume ls
+docker volume prune
+
+# Check your containers
+docker-compose ps
+
+# To see the chaincode container
+docker ps
+```
+
 
 
 
