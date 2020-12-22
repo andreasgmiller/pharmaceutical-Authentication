@@ -174,7 +174,7 @@ cd ./chaincode/abstore
 # Install (external) go dependencies
 GO111MODULE=on go mod vendor
 
-Fabric Chaincode Lifecycle
+##Fabric Chaincode Lifecycle
 
 # Step 1- Package the chaincode
 cd ../../
