@@ -39,6 +39,43 @@ Add new profiles: ThreeOrgsOrdererGenesis, ThreeOrgsChannel
 If you have changed names for the organizations, and domain (eg.logistic1.medtransfer.com), then you have to replace all organization names and container names in the configtx.yaml file, the crypto-config.yaml file, and the docker-compose.yaml file with your new names. 
 
 # Generate Artifacts
+```bash 
+# Create a path that tells the configtxgen tool where to look for the confix.yaml file
+export FABRIC_CFG_PATH=$PWD/configtx
+
+# Create variables for the channel names
+export CHANNEL_NAME=channel1 
+export SYS_CHANNEL_NAME=sys-channel
+
+# Generate Artifacts (Identities)
+cryptogen generate --config=./crypto-config.yaml --output organizations
+
+# Create folders for the channel-artifacts and the system-genesis-block
+mkdir channel-artifacts
+mkdir system-genesis-block
+
+# Create Genesis Block
+configtxgen -profile ThreeOrgsOrdererGenesis -channelID $SYS_CHANNEL_NAME -outputBlock ./system-genesis-block/genesis.block
+
+# Create a Channel Configuration Transaction
+configtxgen -profile ThreeOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel_$CHANNEL_NAME.tx -channelID $CHANNEL_NAME
+
+#Create Anchor Peer Transactions for each Peer Org
+configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+
+configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+
+configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
+
+Note: Remember to replace each orgMSP with the name of your organization. Eg. Change Org1MSP to logistic1MSP.
+
+# Check your work using the tree tool
+tree ./organizations -L 2
+tree ./channel-artifacts
+tree ./system-genesis-block
+```
+
+
 
 
 
