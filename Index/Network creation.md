@@ -195,7 +195,7 @@ peer lifecycle chaincode install basic.tar.gz
 source org3.env
 peer lifecycle chaincode install basic.tar.gz
 
-basic_1:d44a118ea789f00646aec920719320c9c177a68c59150195ec479f3b42e1a672
+## basic_1:d44a118ea789f00646aec920719320c9c177a68c59150195ec479f3b42e1a672
 
 # Switch back to org1
 source org1.env
@@ -215,7 +215,7 @@ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameO
 # Check readiness
 peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --output json
 
-If the CC has been approved for each org, "true" will be shown next to each org. 
+## If the CC has been approved for each org, "true" will be shown next to each org. 
 
 # Commit the CC
 source org1.env
