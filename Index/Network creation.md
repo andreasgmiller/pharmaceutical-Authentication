@@ -33,6 +33,7 @@ cat ../test-network/organizations/cryptogen/crypto-config-org1.yaml >> crypto-co
 # Modify the configtx.yaml file
 
 Add new section for org3
+
 Add new profiles: ThreeOrgsOrdererGenesis, ThreeOrgsChannel
 
 If you have changed names for the organizations, and domain (eg.logistic1.medtransfer.com), then you have to replace all organization names and container names in the configtx.yaml file, the crypto-config.yaml file, and the docker-compose.yaml file with your new names. 
