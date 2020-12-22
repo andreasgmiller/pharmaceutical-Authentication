@@ -76,6 +76,163 @@ tree ./system-genesis-block
 ```
 
 # Start Network
+Modify the docker-compose.yaml file. This includes making changes to the CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE docker variable and creating a .env file. 
+
+```bash
+- CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_own-network
+
+vi .env
+COMPOSE_PROJECT_NAME=own-network
+IMAGE_TAG=latest
+SYS_CHANNEL=system-channel
+
+# Remember to change the network names to own-network
+networks:
+  - own-network
+  
+# Start network in terminal 1
+docker-compose up
+```
+
+# Create Channel
+
+```bash
+# Terminal 2
+cd fabric/fabric-samples/own-network
+
+# Set some env vars
+export FABRIC_CFG_PATH=$PWD/../config/
+export CHANNEL_NAME=channel1 
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+Note (Only if you changed org and container names): Make sure to change the example domain name with your own domain name when exporting the ORDERER_CA variable. Eg. example.com ---> logistic1.com
+
+# Create env files for each organization
+
+- create org1.env
+- create org2.env
+- create org3.env
+
+vi org1.env
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="Org1MSP"
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+export FABRIC_CFG_PATH=$PWD/../config/
+
+Do this for org2 and org3
+
+
+# Switch to org1.env
+source org1.env
+
+# Create Channel
+peer channel create -o localhost:7050 -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.example.com -f ./channel-artifacts/channel_${CHANNEL_NAME}.tx --outputBlock ./channel-artifacts/${CHANNEL_NAME}.block --tls --cafile $ORDERER_CA 
+
+# Join org1 to channel
+peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block
+
+# Join org2 to channel
+source org2.env
+peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block
+
+# Join org3 to channel
+source org3.env
+peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block
+
+Check the results with peer channel list
+
+# Update anchor peer for each org
+
+source org1.env
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile $ORDERER_CA 
+
+source org2.env
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile $ORDERER_CA 
+
+source org3.env
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artifacts/Org3MSPanchors.tx --tls --cafile $ORDERER_CA 
+
+```
+
+At this point the network and channel configuration are ready.
+
+# Install Chaincode
+
+```bash
+
+# Create folder for chaincode
+mkdir chaincode
+cp -r ../chaincode/abstore/go/ chaincode/abstore/
+
+# If needed
+rm -r  chaincode/abstore/vendor
+
+cd ./chaincode/abstore
+
+# Install (external) go dependencies
+GO111MODULE=on go mod vendor
+
+Fabric Chaincode Lifecycle
+
+# Step 1- Package the chaincode
+cd ../../
+peer lifecycle chaincode package basic.tar.gz --path ./chaincode/abstore/ --lang golang --label basic_1
+
+# Check the content
+tar -tvf basic.tar.gz
+
+# Install CC on peer 0 Org1
+source org1.env
+peer lifecycle chaincode install basic.tar.gz
+
+# Install CC on peer 0 Org2
+source org2.env
+peer lifecycle chaincode install basic.tar.gz
+
+# Install CC on peer 0 Org3
+source org3.env
+peer lifecycle chaincode install basic.tar.gz
+
+basic_1:d44a118ea789f00646aec920719320c9c177a68c59150195ec479f3b42e1a672
+
+# Switch back to org1
+source org1.env
+export PKGID=basic_1:d44a118ea789f00646aec920719320c9c177a68c59150195ec479f3b42e1a672
+
+# Approve CC for org1
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
+
+# Approve CC for org2
+source org2.env
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
+
+# Approve CC for org3
+source org3.env
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
+
+# Check readiness
+peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --output json
+
+If the CC has been approved for each org, "true" will be shown next to each org. 
+
+# Commit the CC
+source org1.env
+
+Note it is important to send the commit statement to at least 2 orgs, because of the default chaincode endorsement lifecyle rule: MAJORITY
+
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+
+# Check the result
+peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name basic --cafile $ORDERER_CA
+```
+
+
+
+
+
+
 
 
 
