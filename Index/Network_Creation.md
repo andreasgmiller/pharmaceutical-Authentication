@@ -221,7 +221,8 @@ source logistic1.env
 
 Note it is important to send the commit statement to at least 2 orgs, because of the default chaincode endorsement lifecyle rule: MAJORITY
 
-peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles
+${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt
 
 # Check the result
 peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name basic --cafile $ORDERER_CA
