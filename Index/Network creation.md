@@ -15,7 +15,7 @@ cd fabric-samples
 # Create new base folder inside the fabric-samples folder
 mkdir own-network
 
-# Copy files a few files from the test-network
+# Copy a few files from the test-network
 mkdir configtx
 cp ../test-network/configtx/* configtx/
 cp ../test-network/docker/docker-compose-test-net.yaml ./docker-compose.yaml
@@ -61,13 +61,13 @@ configtxgen -profile ThreeOrgsOrdererGenesis -channelID $SYS_CHANNEL_NAME -outpu
 configtxgen -profile ThreeOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel_$CHANNEL_NAME.tx -channelID $CHANNEL_NAME
 
 #Create Anchor Peer Transactions for each Peer Org
-configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/logistic1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg logistic1MSP
 
-configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/logistic2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg logistic2MSP
 
-configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
+configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/pharmacyMSPanchors.tx -channelID $CHANNEL_NAME -asOrg pharmacyMSP
 
-Note: Remember to replace each orgMSP with the name of your organization. Eg. Change Org1MSP to logistic1MSP.
+
 
 # Check your work using the tree tool
 tree ./organizations -L 2
@@ -76,19 +76,19 @@ tree ./system-genesis-block
 ```
 
 # Start Network
-Modify the docker-compose.yaml file. This includes making changes to the CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE docker variable and creating a .env file. 
+Modify the docker-compose.yaml file. This includes making changes to the CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE docker variable and creating a .env file. Remember to also change all the organization names.
 
 ```bash
 - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_own-network
 
 vi .env
-COMPOSE_PROJECT_NAME=own-network
+COMPOSE_PROJECT_NAME=andreas-network
 IMAGE_TAG=latest
 SYS_CHANNEL=system-channel
 
-# Remember to change the network names to own-network
+# Remember to change the network names to andreas-network
 networks:
-  - own-network
+  - andreas-network
   
 # Start network in terminal 1
 docker-compose up
@@ -98,61 +98,60 @@ docker-compose up
 
 ```bash
 # Terminal 2
-cd fabric/fabric-samples/own-network
+cd fabric/fabric-samples/andreas-network
 
 # Set some env vars
 export FABRIC_CFG_PATH=$PWD/../config/
 export CHANNEL_NAME=channel1 
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem
 
-Note (Only if you changed org and container names): Make sure to change the example domain name with your own domain name when exporting the ORDERER_CA variable. Eg. example.com ---> logistic1.com
 
 # Create env files for each organization
 
-- create org1.env
-- create org2.env
-- create org3.env
+- create logistic1.env
+- create logistic2.env
+- create pharmacy.env
 
 vi org1.env
 export CORE_PEER_TLS_ENABLED=true
-export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt
 export CORE_PEER_LOCALMSPID="Org1MSP"
-export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.medtransfer.com/users/Admin@logistic1.medtransfer.com/msp
 export CORE_PEER_ADDRESS=localhost:7051
 export FABRIC_CFG_PATH=$PWD/../config/
 
-Do this for org2 and org3
+Do this for logistic2 and pharmacy
 
 
-# Switch to org1.env
-source org1.env
+# Switch to logistic1.env
+source logistic1.env
 
 # Create Channel
-peer channel create -o localhost:7050 -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.example.com -f ./channel-artifacts/channel_${CHANNEL_NAME}.tx --outputBlock ./channel-artifacts/${CHANNEL_NAME}.block --tls --cafile $ORDERER_CA 
+peer channel create -o localhost:7050 -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.medtransfer.com -f ./channel-artifacts/channel_${CHANNEL_NAME}.tx --outputBlock ./channel-artifacts/${CHANNEL_NAME}.block --tls --cafile $ORDERER_CA 
 
-# Join org1 to channel
+# Join logistic1 to channel
 peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block
 
-# Join org2 to channel
-source org2.env
+# Join logistic2 to channel
+source logistic2.env
 peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block
 
-# Join org3 to channel
-source org3.env
+# Join pharmacy to channel
+source pharmacy.env
 peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block
 
 Check the results with peer channel list
 
 # Update anchor peer for each org
 
-source org1.env
-peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile $ORDERER_CA 
+source logistic1.env
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com -c $CHANNEL_NAME -f ./channel-artifacts/logistic1MSPanchors.tx --tls --cafile $ORDERER_CA 
 
-source org2.env
-peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile $ORDERER_CA 
+source logistic2.env
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com -c $CHANNEL_NAME -f ./channel-artifacts/logistic2MSPanchors.tx --tls --cafile $ORDERER_CA 
 
-source org3.env
-peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artifacts/Org3MSPanchors.tx --tls --cafile $ORDERER_CA 
+source pharmacy.env
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com -c $CHANNEL_NAME -f ./channel-artifacts/pharmacyMSPanchors.tx --tls --cafile $ORDERER_CA 
 
 ```
 
@@ -183,34 +182,34 @@ peer lifecycle chaincode package basic.tar.gz --path ./chaincode/abstore/ --lang
 # Check the content
 tar -tvf basic.tar.gz
 
-# Install CC on peer 0 Org1
-source org1.env
+# Install CC on peer 0 logistic1
+source logistic1.env
 peer lifecycle chaincode install basic.tar.gz
 
-# Install CC on peer 0 Org2
-source org2.env
+# Install CC on peer 0 logistic2
+source logistic2.env
 peer lifecycle chaincode install basic.tar.gz
 
-# Install CC on peer 0 Org3
-source org3.env
+# Install CC on peer 0 pharmacy
+source pharmacy.env
 peer lifecycle chaincode install basic.tar.gz
 
 ## basic_1:d44a118ea789f00646aec920719320c9c177a68c59150195ec479f3b42e1a672
 
-# Switch back to org1
-source org1.env
+# Switch back to logistic1
+source logistic1.env
 export PKGID=basic_1:d44a118ea789f00646aec920719320c9c177a68c59150195ec479f3b42e1a672
 
-# Approve CC for org1
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
+# Approve CC for logistic1
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
 
-# Approve CC for org2
-source org2.env
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
+# Approve CC for logistic2
+source logistic2.env
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
 
-# Approve CC for org3
-source org3.env
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
+# Approve CC for pharmacy
+source pharmacy.env
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name basic --version 1 --package-id $PKGID --sequence 1
 
 # Check readiness
 peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --output json
@@ -218,11 +217,11 @@ peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name b
 ## If the CC has been approved for each org, "true" will be shown next to each org. 
 
 # Commit the CC
-source org1.env
+source logistic1.env
 
 Note it is important to send the commit statement to at least 2 orgs, because of the default chaincode endorsement lifecyle rule: MAJORITY
 
-peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --channelID $CHANNEL_NAME --name basic --version 1 --sequence 1 --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt
 
 # Check the result
 peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name basic --cafile $ORDERER_CA
@@ -232,14 +231,14 @@ peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name basic -
 
 ```bash
 # First Init the Chaincode
-peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt  --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt -c '{"function":"Init","Args":["account1","1000","account2","10"]}'
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt  --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"Init","Args":["account1","1000","account2","10"]}'
 
 # Query the Chaincode
 peer chaincode query -C $CHANNEL_NAME -n basic -c '{"function":"Query","Args":["account1"]}'
 
 # Invoke the Chaincode from org3
 source org3.env
-peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt  --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt -c '{"function":"Invoke","Args":["account1","account2","100"]}'
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt  --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"Invoke","Args":["account1","account2","100"]}'
 ```
 
 # A Persistent Network
