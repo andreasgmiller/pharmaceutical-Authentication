@@ -265,8 +265,8 @@ docker-compose ps
 docker ps
 ```
 
-
-
+# Important factors to bear in mind when creating the network:
+The most important factor to consider when creating the network is to make sure that the path set for the MSP directory matches the name of your docker service. For example, MSPDir: ./organizations/ordererOrganizations/orderer.medtransfer.com/msp => MSPDir: ../organizations/ordererOrganizations/medtransfer.com/msp. The second factor to consider is to ensure that if you have changed the name of the consortium, you change the name in both the ThreeOrgsOrderGenesis and the ThreeOrgschannel profile section. Otherwise, when creating the channel, an error message will be displayed telling you that the consortium names don't match. 
 
 
 
