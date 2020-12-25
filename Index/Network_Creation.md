@@ -13,7 +13,7 @@ We need the following files:
 cd fabric-samples
 
 # Create new base folder inside the fabric-samples folder
-mkdir own-network
+mkdir andreas-network
 
 # Copy a few files from the test-network
 mkdir configtx
