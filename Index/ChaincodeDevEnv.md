@@ -100,7 +100,16 @@ CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode invoke -o 127.0.0.1:7050 -C ch1 
 CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode invoke -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["InitLedger"]}' --isInit
 CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode query -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["ReadAsset","asset1"]}' | jq .
 ```
+# Delete data and artifacts
+```bash
+# Delete data and artifacts
+rm -R data/*
+rm artifacts/*
 
+# Check contents
+ls -l data
+ls -l artifacts
+```
 
 
 
