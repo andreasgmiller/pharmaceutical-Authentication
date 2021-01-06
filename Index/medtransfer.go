@@ -1,5 +1,3 @@
-# Chaincode
-
 
 /*
 Copyright IBM Corp. All Rights Reserved.
