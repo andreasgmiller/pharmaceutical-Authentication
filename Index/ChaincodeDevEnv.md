@@ -6,47 +6,45 @@ These are the instructions to install the necessary devmode environment for chai
 ```bash
 mkdir fabricDev
 cd fabricDev
-# clone the latest fabric repro
+# Clone the latest fabric repro
 git clone https://github.com/hyperledger/fabric.git
 
-# switch onto this folder
+# Switch onto this folder
 cd fabric
 
-# create a place to store the artifacts
+# Switch back to fabricDev
+cd ../
+
+# Create a place to store the artifacts
 mkdir artifacts
 
-# create a place to store our chaincodes
+# Create a place to store our chaincodes
 mkdir chaincode
-```
-At this time you should have a folder structure like the following:
 
-```bash
-root@fabric-04:~/fabricDev# tree -L 1 .
+At this time you should have a folder structure like the following (use tree -L 1 .):
+
 .
 ├── artifacts
 ├── chaincode
 └── fabric
-```
 
-```bash
-# as a next step you have to build the binaries
-# run the following commands to build the binaries for orderer, peer, and configtxgen
-## we switch into the fabric-folder
+# Run the following commands to build the binaries for the orderer, peer, and configtxgen.
+# Switch to the fabric-folder
 cd fabric
 
-## build (make sure you have installed gcc and make)
+## Build (make sure you have installed gcc and make)
 make orderer peer configtxgen
 
-## if you are ready then go back
+" If you are ready then go back
 cd ../
 
-# set the PATH environment variable to include orderer and peer binaries
+# Set the PATH environment variable to include orderer and peer binaries
 export PATH=$(pwd)/fabric/build/bin:$PATH
 
-# set the FABRIC_CFG_PATH environment variable to point to the sampleconfig folder and MSP
+# Set the FABRIC_CFG_PATH environment variable to point to the sampleconfig folder and MSP
 export FABRIC_CFG_PATH=$(pwd)/fabric/sampleconfig
 
-# generate the genesis block for the ordering service
+# Generate the genesis block for the ordering service
 configtxgen -profile SampleDevModeSolo -channelID syschannel -outputBlock genesisblock -configPath $FABRIC_CFG_PATH -outputBlock $(pwd)/artifacts/genesis.block
 ```
 
@@ -148,15 +146,15 @@ peer lifecycle chaincode commit -o 127.0.0.1:7050 --channelID ch1 --name mycc --
 ## Test your Chaincode
 
 ```bash
-# in terminal 4
-## calls the init function
-CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode invoke -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["msg","Hello"]}'  --isInit
+# In terminal 4
+# Possible chaincode calls:
 
-# querys the key
-CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode invoke -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["","msg"]}'
+CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode invoke -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["InitLedger"]}' --isInit
 
-# set new value
-CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode invoke -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["set","msg2","Hello2"]}'  
+CORE_PEER_ADDRESS=127.0.0.1:7051 peer chaincode query -o 127.0.0.1:7050 -C ch1 -n mycc -c '{"Args":["ReadAsset","asset1"]}' | jq .
+
+
+
 
 ```
 
@@ -166,7 +164,7 @@ Stop the chaincode in terminal 2.
 CTRL + c
 ```
 
-Modify the chaincode e.g. add some debug values. Add the following snippet into the get function (befor the return command).
+Modify the chaincode e.g. add some debug values. Add the following snippet into the get function (before the return command).
 ```
 if os.Getenv("DEVMODE_ENABLED") != "" {
   fmt.Printf("Asset: %s\n",args[0])
