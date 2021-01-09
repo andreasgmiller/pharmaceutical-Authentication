@@ -200,9 +200,18 @@ export CC_PACKAGE_ID=medtransfer_1:bf3adeff71ae1ba0b9bc708ad30924b8867cabf67c74c
 
  ```
 
+# Committing the chaincode definition to the channel
 
+```bash
+# Command to copy
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com --channelID channel1 --name medtransfer --version 1 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt
 
-  
+```
+You can use the peer lifecycle chaincode querycommitted command to confirm that the chaincode definition has been committed to the channel.
+
+```bash
+peer lifecycle chaincode querycommitted --channelID channel1 --name medtransfer --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem
+```
 
 
 
