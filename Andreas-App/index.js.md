@@ -2,7 +2,7 @@
 
 
 
-# Initialize the node.js prject
+# Initialize the node.js project
 npm init
 
 # Install web framework 
