@@ -1,6 +1,6 @@
 # Express.js app (Hello world route)
 
-´´´bash
+
 
 # Initialize the node.js prject
 npm init
@@ -26,4 +26,3 @@ app.listen(port, () => console.log(`Hello world app listening on port ${port}!`)
 # Run the application
 node andreas_project.js
 
-´´´
