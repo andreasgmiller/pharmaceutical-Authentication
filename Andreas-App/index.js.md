@@ -13,15 +13,37 @@ First create file called índex.js and import the express framework:
 const express = require('express');
 
 # Creating the app
-const app = express();
-
-const port = 3000;
+const express = require('express')
+const app = express()
+const port = 3000
 
 app.get('/', (req, res) => {
-    res.send('Hello World, from express');
-});
+  res.send('Hello World!')
+})
 
-app.listen(port, () => console.log(`Hello world app listening on port ${port}!`))
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 
 # Run the application
 node index.js
+
+Relaod is done by restart. Nodemon
+
+Stop with control c
+
+express.js 
+
+npm
+
+pm2
+
+nodemon
+
+npm mocha
+
+supertest
+
+body parser
+
+curl http://localhost:3000
