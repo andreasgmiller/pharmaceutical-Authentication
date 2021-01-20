@@ -9,7 +9,7 @@ npm init
 npm install --save express
 
 # Creating a simple endpoint
-First create file called andreas_project.js and import the express framework:
+First create file called índex.js and import the express framework:
 const express = require('express');
 
 # Creating the app
@@ -24,4 +24,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => console.log(`Hello world app listening on port ${port}!`))
 
 # Run the application
-node andreas_project.js
+node index.js
