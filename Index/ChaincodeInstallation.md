@@ -213,11 +213,27 @@ You can use the peer lifecycle chaincode querycommitted command to confirm that 
 peer lifecycle chaincode querycommitted --channelID channel1 --name medtransfer --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem
 ```
 
+# Testing the chaincoed with CLI Commands
+````bash
+# Init the ledger
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com  --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem -C channel1 -n medtransfer --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}' 
 
+# Query the ledger with ReadAsset
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com  --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem -C channel1 -n medtransfer --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"ReadAsset","Args":["asset1"]}' 
 
+# CreateAsset
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com  --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem -C channel1 -n medtransfer --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"CreateAsset","Args":["Id", "CarLicenceNumber", "CurrentTemperature"]}' 
 
+# Update Asset
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com  --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem -C channel1 -n medtransfer --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"UpdateAsset","Args":["Id", "CarLicenceNumber", "CurrentTemperature"]}' 
 
+# Delete Asset
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com  --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem -C channel1 -n medtransfer --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"DeleteAsset","Args":["Id"]}' 
 
+# Get All Assets
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.medtransfer.com  --tls --cafile ${PWD}/organizations/ordererOrganizations/medtransfer.com/orderers/orderer.medtransfer.com/msp/tlscacerts/tlsca.medtransfer.com-cert.pem -C channel1 -n medtransfer --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic1.medtransfer.com/peers/peer0.logistic1.medtransfer.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/logistic2.medtransfer.com/peers/peer0.logistic2.medtransfer.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/pharmacy.medtransfer.com/peers/peer0.pharmacy.medtransfer.com/tls/ca.crt -c '{"function":"GetAllAsset","Args":[]}' 
+
+´´´
 
 
 
